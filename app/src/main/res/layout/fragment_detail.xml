@@ -1,76 +1,77 @@
- <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context="com.example.ayush.popularmovies.DetailFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000000"
-        android:orientation="vertical">
-
-        <!-- TODO: Update blank fragment layout -->
-        <ImageView
-            android:id="@+id/movie_poster"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/poster"
-            android:adjustViewBounds="true"/>
-
-        <TextView
-            android:id="@+id/movie_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Movie Title"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textSize="32sp"/>
-
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.ayush.popularmovies.DetailFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp">
-            <TextView
-                android:id="@+id/year"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="year"
-                android:layout_weight="0.5"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:textColor="@android:color/darker_gray"/>
+            android:orientation="vertical">
+
+            <!-- TODO: Update blank fragment layout -->
             <ImageView
-                android:layout_weight="0.25"
-                android:layout_width="wrap_content"
+                android:id="@+id/movie_poster"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/btn_star"
-                android:gravity="right"/>
+                android:contentDescription="@string/poster"
+                android:adjustViewBounds="true"/>
+
             <TextView
-                android:id="@+id/ratings"
-                android:layout_width="wrap_content"
+                android:id="@+id/movie_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ratings"
-                android:layout_weight="0.25"
+                android:text="Movie Title"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="32sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+                <TextView
+                    android:id="@+id/year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="year"
+                    android:layout_weight="0.5"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"/>
+                <ImageView
+                    android:layout_weight="0.25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/btn_star"
+                    android:gravity="right"/>
+                <TextView
+                    android:id="@+id/ratings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ratings"
+                    android:layout_weight="0.25"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/darker_gray"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OverView"
+                android:textSize="28sp"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                android:textStyle="italic"/>
+
+            <TextView
+                android:id="@+id/overview_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OverView Content"
                 android:textSize="24sp"
-                android:textColor="@android:color/darker_gray"/>
-        </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="OverView"
-            android:textSize="28sp"
-            android:gravity="center"
-            android:textColor="#FFFFFF"
-            android:textStyle="italic"/>
-     <ScrollView
-         android:layout_width="match_parent"
-         android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/overview_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="OverView Content"
-            android:textSize="24sp"
-            android:textColor="#FFFFFF" />
-     </ScrollView>
- </LinearLayout>
+                android:textColor="#FFFFFF" />
+     </LinearLayout>
+ </ScrollView>

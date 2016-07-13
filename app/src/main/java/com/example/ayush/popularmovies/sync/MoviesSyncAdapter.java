@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 import java.util.Vector;
 
+import adapter.Utility;
 import retrofit.MovieDB;
 import retrofit.MovieDbAPI;
 import retrofit.Results;
@@ -75,10 +76,13 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter implements Ca
                 .build();
 
         MovieDbAPI movieDBAPI = retrofit.create(MovieDbAPI.class);
-
-        Call<MovieDB> call = movieDBAPI.getAPPID(MoviesFragment.order, MainActivity.app_key);
-        //asynchronous call
-        call.enqueue(this);
+        String order = Utility.getPreferredChoice(getContext());
+        if(!order.equals(getContext().getString(R.string.favorite_movies_tag))){
+            Call<MovieDB> call = movieDBAPI.getAPPID(order,
+                    MainActivity.app_key);
+            //asynchronous call
+            call.enqueue(this);
+        }
     }
 
     /**
@@ -173,7 +177,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter implements Ca
             
 
             ContentValues movieValues = new ContentValues();
-            Log.e(LOG_TAG,original_title);
+            //Log.e(LOG_TAG,original_title);
             movieValues.put(MoviesContract.MovieEntry.COLUMN_TITLE, original_title);
             movieValues.put(MoviesContract.MovieEntry.COLUMN_BAKCDROP_PATH,backdrop_path);
             movieValues.put(MoviesContract.MovieEntry.COLUMN_PLOT,overview);

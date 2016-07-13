@@ -3,6 +3,8 @@ package adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Movie;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import com.example.ayush.popularmovies.DetailActivity;
 import com.example.ayush.popularmovies.MoviesFragment;
 import com.example.ayush.popularmovies.R;
+import com.example.ayush.popularmovies.data.MoviesContract;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -51,7 +54,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Context context = mContext;
-        final Cursor cursor = mCursor;
+        Cursor cursor = mCursor;
         cursor.moveToPosition(position);
         Picasso.with(context)
                 .load(baseURL + cursor.getString(MoviesFragment.COL_POSTER))
@@ -59,13 +62,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         holder.moviePoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra("poster",cursor.getString(MoviesFragment.COL_BACKDROP_POSTER));
-                intent.putExtra("title",cursor.getString(MoviesFragment.COL_MOVIE_TITLE));
-                intent.putExtra("year",cursor.getString(MoviesFragment.COL_RELEASE_DATE));
-                intent.putExtra("ratings",cursor.getDouble(MoviesFragment.COL_MOVIE_RATING));
-                intent.putExtra("overview content",cursor.getString(MoviesFragment.COL_MOVIE_PLOT));
-                context.startActivity(intent);
+                MoviesFragment.mPosition=position;
+                Cursor cursor = mCursor;
+                cursor.moveToPosition(position);
+                Uri movieUri = MoviesContract.MovieEntry.buildMovieUriWithId(
+                        cursor.getLong(MoviesFragment.COL_MOVIE_ID));
+                ((MoviesFragment.Callback) mContext).onItemSelected(movieUri);
             }
         });
     }
@@ -82,8 +84,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    public Cursor getCursor(){
-        return mCursor;
+    public int getPosition(){
+        return mCursor.getPosition();
     }
 
 }

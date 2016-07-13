@@ -9,8 +9,10 @@
     <string name="poster">movie poster</string>
     <string name="top_rated_tag">top_rated</string>
     <string name="popular_tag">popular</string>
+    <string name="favorite_movies_tag">favorites</string>
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
+    <string name="favorite_movies">Favorite Movies</string>
 
     <string name="sync_account_type">popularmovies.example.com</string>
     <string name="content_authority">com.example.ayush.popularmovies</string>

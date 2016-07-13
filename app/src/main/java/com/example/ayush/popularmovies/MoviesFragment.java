@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,7 @@ import com.example.ayush.popularmovies.data.MoviesContract;
 import com.example.ayush.popularmovies.sync.MoviesSyncAdapter;
 
 import adapter.MoviesAdapter;
+import adapter.Utility;
 import retrofit.MovieDB;
 
 
@@ -37,7 +39,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     public View rootView;
     public MovieDB movieDB;
     private String app_key ;
-    public static String order ="popular";
+    public static String order ;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private MoviesAdapter mAdapter;
@@ -62,6 +64,9 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_BACKDROP_POSTER = 6;
     public static final int COLUMN_VIDEOS_URL = 7;
     public static final int COLUMN_REVIEWS = 8;
+    public static int mPosition;
+    private final String POSITION="position";
+
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -87,7 +92,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         rootView =  inflater.inflate(R.layout.fragment_movies, container, false);
         movieDB = new MovieDB();
         try {
-            app_key = getArguments().getString(getString(R.string.app_key));
+            app_key = MainActivity.app_key;
         }
         catch (NullPointerException n){
             n.printStackTrace();
@@ -119,10 +124,18 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.action_popular)
-            order = getString(R.string.popular_tag);
-        else if(id == R.id.action_top_rated)
-            order = getString(R.string.top_rated_tag);
+        if(id == R.id.action_popular) {
+            Utility.setUserChoice(getContext(), getActivity().getString(R.string.popular_tag));
+            Log.e("Options Menu",getActivity().getString(R.string.popular_tag));
+        }
+        else if(id == R.id.action_top_rated) {
+            Log.e("Options Menu",getActivity().getString(R.string.top_rated_tag));
+            Utility.setUserChoice(getContext(),getActivity().getString(R.string.top_rated_tag));
+        }
+        else if(id == R.id.action_favorite){
+            Log.e("Options Menu",getActivity().getString(R.string.favorite_movies_tag));
+            Utility.setUserChoice(getContext(),getActivity().getString(R.string.favorite_movies_tag));
+        }
         updateMovies();
         return super.onOptionsItemSelected(item);
     }
@@ -130,16 +143,25 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onResume() {
         super.onResume();
-        updateMovies();
+        getLoaderManager().restartLoader(MOVIES_LOADER,null,this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(POSITION,mPosition);
+        Log.v(MoviesFragment.class.getSimpleName(),mPosition+"saved");
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Uri movieUri;
-//        if(order.equals(getActivity().getString(R.string.popular))||order.equals(getActivity().getString(R.string.top_rated)))
+        order = Utility.getPreferredChoice(getContext());
+        //Log.e(MoviesFragment.class.getSimpleName(), "onCreateLoader: "+order);
+        if(order.equals(getActivity().getString(R.string.popular_tag))||order.equals(getActivity().getString(R.string.top_rated_tag)))
             movieUri = MoviesContract.MovieEntry.CONTENT_URI;
-//        else
-//            movieUri = MoviesContract.FavoriteMovieEntry.CONTENT_URI;
+        else
+            movieUri = MoviesContract.FavoriteMovieEntry.CONTENT_URI;
 
         return new CursorLoader(getActivity(),
                 movieUri,
@@ -152,10 +174,25 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mAdapter.swapCursor(cursor);
+        mRecyclerView.getLayoutManager().scrollToPosition(mPosition);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mAdapter.swapCursor(null);
     }
+
+    public void onOrderChanged(){
+        updateMovies();
+        getLoaderManager().restartLoader(MOVIES_LOADER,null,this);
+    }
+
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri movieUri);
+    }
+
+
 }

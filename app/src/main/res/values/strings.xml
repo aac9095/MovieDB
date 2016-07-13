@@ -11,4 +11,8 @@
     <string name="popular_tag">popular</string>
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
+
+    <string name="sync_account_type">popularmovies.example.com</string>
+    <string name="content_authority">com.example.ayush.popularmovies</string>
+
 </resources>

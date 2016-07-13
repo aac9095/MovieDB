@@ -3,8 +3,10 @@ package com.example.ayush.popularmovies;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.ayush.popularmovies.sync.MoviesSyncAdapter;
+
 public class MainActivity extends AppCompatActivity {
-    private static String app_key = "Your App Key";
+    public static String app_key = "a86956e0e2f98096b78d60b4ba9bcbb4";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,5 +20,6 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.container, moviesFragment)
                     .commit();
         }
+        MoviesSyncAdapter.initializeSyncAdapter(this);
     }
 }

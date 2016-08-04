@@ -1,11 +1,9 @@
 package com.example.ayush.popularmovies;
 
 
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -27,7 +25,7 @@ import com.example.ayush.popularmovies.sync.MoviesSyncAdapter;
 
 import adapter.MoviesAdapter;
 import adapter.Utility;
-import retrofit.MovieDB;
+import movieDB.MovieDB;
 
 
 /**
@@ -110,8 +108,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
 
     public void updateMovies(){
+        getLoaderManager().restartLoader(MOVIES_LOADER,null,this);
         MoviesSyncAdapter.syncImmediately(getActivity());
-        mRecyclerView.setAdapter(mAdapter);
     }
 
 
@@ -182,10 +180,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         mAdapter.swapCursor(null);
     }
 
-    public void onOrderChanged(){
-        updateMovies();
-        getLoaderManager().restartLoader(MOVIES_LOADER,null,this);
-    }
 
     public interface Callback {
         /**

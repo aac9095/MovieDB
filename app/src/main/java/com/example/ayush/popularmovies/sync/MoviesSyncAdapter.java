@@ -16,7 +16,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ayush.popularmovies.MainActivity;
-import com.example.ayush.popularmovies.MoviesFragment;
 import com.example.ayush.popularmovies.R;
 import com.example.ayush.popularmovies.data.MoviesContract;
 import com.google.gson.Gson;
@@ -26,9 +25,9 @@ import java.util.List;
 import java.util.Vector;
 
 import adapter.Utility;
-import retrofit.MovieDB;
-import retrofit.MovieDbAPI;
-import retrofit.Results;
+import movieDB.MovieDB;
+import movieDB.MovieDbAPI;
+import movieDB.Results;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

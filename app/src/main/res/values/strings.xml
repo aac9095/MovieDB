@@ -16,5 +16,6 @@
 
     <string name="sync_account_type">popularmovies.example.com</string>
     <string name="content_authority">com.example.ayush.popularmovies</string>
+    <string name="overview">Overview</string>
 
 </resources>

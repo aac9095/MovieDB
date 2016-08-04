@@ -3,8 +3,10 @@ package adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.ImageView;
 
 import com.example.ayush.popularmovies.R;
+import com.squareup.picasso.Picasso;
 
 public class Utility {
 
@@ -19,5 +21,4 @@ public class Utility {
         SharedPreferences preferences = context.getSharedPreferences(String.valueOf(R.string.content_authority), Context.MODE_PRIVATE);
         return preferences.getString("view", "popular");
     }
-
 }

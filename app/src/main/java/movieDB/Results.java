@@ -1,7 +1,4 @@
-package retrofit;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package movieDB;
 
 import java.util.ArrayList;
 import java.util.List;

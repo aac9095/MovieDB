@@ -55,7 +55,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COLUMN_VIDEOS_URL = 7;
     public static final int COLUMN_REVIEWS = 8;
 
-    private TextView movieTitle,movieYear,movieRating,movieOverview;
+    private TextView movieTitle,movieYear,movieRating,movieOverview,overview;
     private ImageView moviePoster,favMovie;
 
     public DetailFragment() {
@@ -79,9 +79,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         Bundle arguments = getArguments();
         if (arguments != null) {
+            Log.e(LOG_TAG,"Received Arguements");
             mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
         }
         else{
+            Log.e(LOG_TAG,"Received Intent");
             Intent intent = getActivity().getIntent();
             mUri=intent.getData();
         }
@@ -93,6 +95,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         movieYear = (TextView) rootView.findViewById(R.id.year);
         movieRating = (TextView) rootView.findViewById(R.id.ratings);
         movieOverview = (TextView) rootView.findViewById(R.id.overview_content);
+        overview = (TextView) rootView.findViewById(R.id.overview);
+        overview.setText(R.string.overview);
         id = favMovie.getId();
         favMovie.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +110,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                                         null);
                 cursorMovie.moveToFirst();
                 ContentValues[] values = new ContentValues[cursorMovie.getCount()];
+                value.put(MoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID,cursorMovie.getString(COL_MOVIE_ID));
                 value.put(MoviesContract.FavoriteMovieEntry.COLUMN_TITLE, cursorMovie.getString(COL_MOVIE_TITLE));
                 value.put(MoviesContract.FavoriteMovieEntry.COLUMN_PLOT, cursorMovie.getString(COL_MOVIE_PLOT));
                 value.put(MoviesContract.FavoriteMovieEntry.COLUMN_POSTER, cursorMovie.getString(COL_POSTER));
@@ -138,6 +143,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                         .centerCrop()
                         .into(favMovie);
                 cursorMovie.close();
+                restartLoader();
             }
         });
 
@@ -147,18 +153,27 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (mUri!=null)
+        if (mUri!=null) {
+            //Log.e(LOG_TAG,"URI is not null");
             return new CursorLoader(getActivity(),
                     mUri,
                     MOVIE_COLUMNS,
                     null,
                     null,
                     null);
-        return null;
+        }
+        else{
+            Log.e(LOG_TAG,"URI is null");
+            return null;
+        }
+
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Cursor cursor = data;
+        if(!cursor.moveToFirst())
+            Log.e(LOG_TAG,"cursor not moved to first position");
         if(data!=null&&data.moveToFirst()){
             String title = data.getString(COL_MOVIE_TITLE);
             String year = data.getString(COL_RELEASE_DATE);
@@ -166,6 +181,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String overview = data.getString(COL_MOVIE_PLOT);
             String baseURL = "http://image.tmdb.org/t/p/w342";
             String poster = data.getString(COL_BACKDROP_POSTER);
+
+            Log.e("title",title);
+            Log.e("year",year);
 
             Picasso.with(getContext())
                     .load(baseURL +poster)
@@ -198,6 +216,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                     .centerCrop()
                     .into(favMovie);
         }
+    }
+    void restartLoader(){
+        getLoaderManager().restartLoader(DETAIL_LOADER,null,this);
     }
 
     @Override

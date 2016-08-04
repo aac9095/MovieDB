@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.ayush.popularmovies.sync.MoviesSyncAdapter;
 import com.facebook.stetho.Stetho;
@@ -19,10 +20,7 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
     protected void onCreate(Bundle savedInstanceState) {
         Stetho.initializeWithDefaults(this);
         mOrder = Utility.getPreferredChoice(this);
-        if(!mOrder.equals(getString(R.string.popular_tag))) {
-            mOrder = getString(R.string.popular_tag);
-            Utility.setUserChoice(this,mOrder);
-        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (findViewById(R.id.movies_detail_container) != null) {
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
         if (order != null && !order.equals(mOrder)) {
             MoviesFragment ff = (MoviesFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_movies);
             if ( null != ff ) {
-                ff.onOrderChanged();
+                ff.updateMovies();
             }
             mOrder=order;
         }
@@ -86,4 +84,14 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
         }
     }
 
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        Log.e("onDestroy","Called");
+//        mOrder = Utility.getPreferredChoice(this);
+//        if(!mOrder.equals(getString(R.string.popular_tag))) {
+//            mOrder = getString(R.string.popular_tag);
+//            Utility.setUserChoice(this,mOrder);
+//        }
+//    }
 }

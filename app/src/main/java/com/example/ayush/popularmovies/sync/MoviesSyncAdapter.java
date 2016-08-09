@@ -7,6 +7,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.example.ayush.popularmovies.MainActivity;
 import com.example.ayush.popularmovies.R;
 import com.example.ayush.popularmovies.data.MoviesContract;
+import com.example.ayush.popularmovies.service.VideosAndReviewsService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -184,7 +186,8 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter implements Ca
             movieValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, release_date);
             movieValues.put(MoviesContract.MovieEntry.COLUMN_POSTER, poster_path);
             movieValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_ID, id);
-            
+            insertVideosOrReviews(String.valueOf(id), "videos", original_title);
+            insertVideosOrReviews(String.valueOf(id), "reviews", original_title);
             cVVector.add(movieValues);
         }
 
@@ -260,6 +263,13 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter implements Ca
         getSyncAccount(context);
     }
 
+    public void insertVideosOrReviews(String id, String type, String title) {
+        Intent intent = new Intent(getContext(), VideosAndReviewsService.class);
+        intent.putExtra("id", id);
+        intent.putExtra("type", type);
+        intent.putExtra("title", title);
+        getContext().startService(intent);
+    }
 
 
 }

@@ -60,7 +60,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
                 String order = Utility.getPreferredChoice(mContext);
                 Uri movieUri;
                 Log.e("Movie id",""+cursor.getLong(MoviesFragment.COL_MOVIE_ID));
-                if(!order.equals(mContext.getString(R.string.favorite_movies))){
+                if(!order.equals(mContext.getString(R.string.favorite_movies_tag))){
                    movieUri  = MoviesContract.MovieEntry.buildMovieUriWithId(
                             cursor.getLong(MoviesFragment.COL_MOVIE_ID));
                 }

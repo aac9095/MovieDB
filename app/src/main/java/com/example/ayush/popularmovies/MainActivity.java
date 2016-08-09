@@ -12,7 +12,7 @@ import com.facebook.stetho.Stetho;
 import adapter.Utility;
 
 public class MainActivity extends AppCompatActivity implements MoviesFragment.Callback{
-    public static String app_key = "a86956e0e2f98096b78d60b4ba9bcbb4";
+    public static String app_key = "enter your api key";
     private final String DETAILFRAGMENT_TAG = "DFTAG";
     private String mOrder;
     private boolean mTwoPane;

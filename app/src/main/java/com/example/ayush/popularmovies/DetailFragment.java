@@ -12,6 +12,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +23,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ayush.popularmovies.data.MoviesContract;
+import com.example.ayush.popularmovies.service.Review;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
+import adapter.MoviesAdapter;
+import adapter.ReviewsAdapter;
+import adapter.TrailersAdapter;
 
 
 /**
@@ -33,6 +45,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int DETAIL_LOADER = 0;
     private int id;
     private Uri mUri;
+    private ArrayList<String>  mkeysList;
+    private ArrayList<Review> mReviewsList;
+
     public static final String[] MOVIE_COLUMNS = {
             MoviesContract.MovieEntry._ID,
             MoviesContract.MovieEntry.COLUMN_TITLE,
@@ -55,8 +70,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COLUMN_VIDEOS_URL = 7;
     public static final int COLUMN_REVIEWS = 8;
 
-    private TextView movieTitle,movieYear,movieRating,movieOverview,overview;
+    private TextView movieTitle,movieYear,movieRating,movieOverview,overview,mTrailerHeading,mReviewHeading;
     private ImageView moviePoster,favMovie;
+    private RecyclerView trailers,reviews;
+    private LinearLayoutManager mTrailerLayoutManager,mReviewLayoutManager;
+    private TrailersAdapter mTrailerAdapter;
+    private ReviewsAdapter mReviewAdapter;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -93,6 +112,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         moviePoster = (ImageView) rootView.findViewById(R.id.movie_poster);
         movieTitle = (TextView) rootView.findViewById(R.id.movie_title);
         movieYear = (TextView) rootView.findViewById(R.id.year);
+
+        mTrailerHeading = (TextView) rootView.findViewById(R.id.trailer_heading);
+        mReviewHeading = (TextView) rootView.findViewById(R.id.reviews_heading);
+        trailers = (RecyclerView) rootView.findViewById(R.id.trailers);
+        reviews = (RecyclerView) rootView.findViewById(R.id.reviews);
+        trailers.setHasFixedSize(true);
+        reviews.setHasFixedSize(true);
+        mTrailerLayoutManager = new GridLayoutManager(getActivity(), 2);
+        mReviewLayoutManager = new LinearLayoutManager(getActivity());
+        trailers.setLayoutManager(mTrailerLayoutManager);
+        reviews.setLayoutManager(mReviewLayoutManager);
+        mTrailerAdapter = new TrailersAdapter(getContext(),null);
+        mReviewAdapter = new ReviewsAdapter(getContext(),null);
+        trailers.setAdapter(mTrailerAdapter);
+        reviews.setAdapter(mReviewAdapter);
+
         movieRating = (TextView) rootView.findViewById(R.id.ratings);
         movieOverview = (TextView) rootView.findViewById(R.id.overview_content);
         overview = (TextView) rootView.findViewById(R.id.overview);
@@ -175,6 +210,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         if(!cursor.moveToFirst())
             Log.e(LOG_TAG,"cursor not moved to first position");
         if(data!=null&&data.moveToFirst()){
+
+            String[] videoKeys = new String[]{};
+            String[] authorAndContentList = new String[]{};
+
             String title = data.getString(COL_MOVIE_TITLE);
             String year = data.getString(COL_RELEASE_DATE);
             Double ratings = data.getDouble(COL_MOVIE_RATING);
@@ -182,8 +221,30 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String baseURL = "http://image.tmdb.org/t/p/w342";
             String poster = data.getString(COL_BACKDROP_POSTER);
 
-            Log.e("title",title);
-            Log.e("year",year);
+            if (data.getString(COLUMN_VIDEOS_URL) != null) {
+                videoKeys = data.getString(COLUMN_VIDEOS_URL).split(",");
+            }
+            mkeysList = new ArrayList<>(Arrays.asList(videoKeys));
+            mTrailerAdapter.swapList(mkeysList);
+            if (data.getString(COLUMN_REVIEWS) != null) {
+                authorAndContentList = data.getString(COLUMN_REVIEWS).split(Pattern.quote("||"));
+            } else {
+                mTrailerHeading.setText(R.string.no_trailers);
+            }
+            if (authorAndContentList.length > 0) {
+                String[] authors = authorAndContentList[0].split(Pattern.quote("|"));
+                String[] content = authorAndContentList[1].split(Pattern.quote("|"));
+                mReviewsList = new ArrayList<Review>();
+                for (int i = 0; i < authors.length; i++) {
+                    Review review = new Review();
+                    review.setAuthor(authors[i]);
+                    review.setContent(content[i]);
+                    mReviewsList.add(review);
+                }
+                mReviewAdapter.swapList(mReviewsList);
+            } else {
+                mReviewHeading.setText(R.string.no_reviews);
+            }
 
             Picasso.with(getContext())
                     .load(baseURL +poster)
